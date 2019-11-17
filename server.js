@@ -5,11 +5,11 @@ const MongoClient = require('mongodb').MongoClient
 
 var db, collection;
 
-const url = "mongodb+srv://demo:demo@cluster0-q2ojb.mongodb.net/test?retryWrites=true";
-const dbName = "demo";
+const url = "mongodb+srv://DanDan10:danoo1@star-wars-quotes-ldrjw.mongodb.net/test?retryWrites=true&w=majority";
+const dbName = "savage";
 
-app.listen(3000, () => {
-    MongoClient.connect(url, { useNewUrlParser: true }, (error, client) => {
+app.listen(4000, () => {
+    MongoClient.connect(url, { useUnifiedTopology: true }, (error, client) => {
         if(error) {
             throw error;
         }
@@ -44,6 +44,21 @@ app.put('/messages', (req, res) => {
   .findOneAndUpdate({name: req.body.name, msg: req.body.msg}, {
     $set: {
       thumbUp:req.body.thumbUp + 1
+    }
+  }, {
+    sort: {_id: -1},
+    upsert: true
+  }, (err, result) => {
+    if (err) return res.send(err)
+    res.send(result)
+  })
+})
+
+app.put('/messagesMinus', (req, res) => {
+  db.collection('messages')
+  .findOneAndUpdate({name: req.body.name, msg: req.body.msg}, {
+    $set: {
+      thumbUp:req.body.thumbUp - 1,
     }
   }, {
     sort: {_id: -1},
